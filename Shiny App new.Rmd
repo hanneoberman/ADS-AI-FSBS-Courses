@@ -344,10 +344,10 @@ shinyApp(
         data <- DS %>%
           select(c(1, 4, 5, 9, 10:57)) %>%
           filter(year == year(), course_type == course_type()) %>%
-          pivot_longer(cols = where(is.numeric)) %>%
-          group_by(name) %>%
-          summarise(value = sum(value, na.rm = TRUE)) %>%
-          filter(value > 0)
+  pivot_longer(cols = everything()[-c(1:4)]) %>%
+  group_by(name) %>%
+  summarise(value = sum(as.numeric(value), na.rm = TRUE)) %>%
+  filter(value > 0)
         colnames(data) <- c("id", "value")
         data <- left_join(data, short, by = "id")
         r2d3(data = data,
@@ -360,10 +360,10 @@ shinyApp(
         if (course_type() %in% data$course_type) {
           data <- data %>%
             filter(course_type == course_type()) %>%
-            pivot_longer(cols = where(is.numeric)) %>%
-            group_by(name) %>%
-            summarise(value = sum(value, na.rm = TRUE)) %>%
-            filter(value > 0)
+  pivot_longer(cols = everything()[-c(1:4)]) %>%
+  group_by(name) %>%
+  summarise(value = sum(as.numeric(value), na.rm = TRUE)) %>%
+  filter(value > 0)
           colnames(data) <- c("id", "value")
           data <- left_join(data, short, by = "id")
           r2d3(data = data,
@@ -413,9 +413,9 @@ shinyApp(
           data <- DS %>%
             select(year, c(1, 4, 5, 9, 10:57)) %>%
             filter(!!sym(input_plots$over) == names_for_bubble[my_i]) %>%
-            pivot_longer(cols = where(is.numeric)) %>%
-            group_by(name) %>%
-            summarise(value = sum(value, na.rm = TRUE))
+  pivot_longer(cols = everything()[-c(1:4)]) %>%
+  group_by(name) %>%
+  summarise(value = sum(as.numeric(value), na.rm = TRUE)) 
           
           if (all(data$value < input_plots$min_course_type)) {
             data <-
@@ -498,7 +498,7 @@ shinyApp(
           ylab("") +
           xlab("percentage (%)") +
           theme_minimal()
-      ) %>% layout(height = 800, width = 1000)
+      ) # %>% layout(height = 800, width = 1000)
     })
   }
 )
